@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Orchard Secure Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all" id="bootstrap-css" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+
+
+<body style="font-family: 'Open Sans', sans-serif; background:url(images/pattern.jpg)">
+	<div class="container">
+		<div class="centered title"><h1>Welcome to our checkout.</h1></div>
+     </div>
+     <hr class="featurette-divider"></hr>
+     <div class="container">
+     	<div class="row">     
+        	<div class="col-sm-6">
+           		<label class='control-label'></label><!-- spacing -->
+        
+          		<div class="alert alert-info">
+          			Please select your payment method and proceed with payment
+          		</div>
+       			
+       			<br>
+         		
+         		<div class="btn-group-vertical btn-block">
+             		<a class="btn btn-default" style="text-align: left;" data-toggle="tab" href="#cards">Credit Card</a>
+          			<a class="btn btn-default" style="text-align: left;" data-toggle="tab" href="#momo">Mobile Money</a>
+          		</div>
+          
+          		<br><br><br>
+         
+         		<div class="jumbotron-flat">
+    				<div class="center">
+    					<h2>Amount: <strong>GHS <%= @amount %></strong></h2>
+    				</div>
+           			
+        		</div>
+             
+            	<br><br><br>
+        	</div>            
+
+
+     		<div class="col-sm-6">
+                <div class="tab-content">
+                	<div id="momo" class="tab-pane fade">
+	                	<div class="panel panel-default credit-card-box">
+			                <div class="panel-heading display-table" >
+			                    <div class="row display-tr" >
+			                        <h2 class="panel-title display-td" ></h2>
+			                        <div class="display-td" >                            
+			                            <img class="img-responsive pull-right" src="images/momo.png">
+			                        </div>
+			                    </div>                    
+			                </div>
+			                <div class="panel-body">
+			                    <form role="form" method="POST" action="/process_page" name= "momoForm" onsubmit="return validateMomo()">
+			                        <div class="row">
+			                            <div class="col-xs-12">
+			                                <div class="form-group">
+			                                    <label>Network</label>
+			                                    <p id="momo_nw_error" style="color: red"></p>
+			                                    <div class="input-group">
+			                                    	<select name="nw" class="form-control" id="network" onchange="enable_voda()" required>
+			                                    		<option value="0"></option>
+			                                    		<option value="MTN">MTN</option>
+			                                    		<option value="TIG">Tigo</option>
+			                                    		<option value="AIR">Airtel</option>
+			                                    		<option value="VOD">Vodafone</option>
+			                                    	</select>
+			                                    </div>
+			                                </div>                            
+			                            </div>
+			                        </div>
+			                        <div class="row">
+			                            <div class="col-xs-12">
+			                                <div class="form-group">
+			                                    <label>Mobile Number</label>
+			                                    <br/>
+			                                    <p id="momo_mobile_num_error" style="color: red"></p>
+			                                    <input type="text" class="form-control" name="mobile_number" placeholder="0209390147" required />
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <div class="row" id="voucher_code_display" style="display: none;">
+			                            <div class="col-xs-12">
+			                                <div class="form-group">
+			                                    <label>Voucher Code</label>
+			                                    <br/>
+			                                    <p id="momo_voucher_error" style="color: red"></p>
+			                                    <input type="text" class="form-control" name="voucher_code" placeholder="123456" />
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <input type="hidden" name="trnx_type" value="MOM" />
+			                        <input type="hidden" name="token" value="<%= @token %>" />
+			                        <input type="hidden" name="trans_ref" value="<%= @exttrid %>" />
+			                        <div class="row">
+			                            <div class="col-xs-12">
+			                                <button class="subscribe btn btn-success btn-lg btn-block" type="submit">Make Payment</button>
+			                            </div>
+			                        </div>
+			                    </form>
+			                </div>
+						</div>
+        			</div>
+
+	                <div id="cards" class="tab-pane fade in active">
+	                	<div class="panel panel-default credit-card-box">
+			                <div class="panel-heading display-table" >
+			                    <div class="row display-tr" >
+			                        <h2 class="panel-title display-td" ></h2>
+			                        <div class="display-td" >                            
+			                            <img class="img-responsive pull-right" src="images/cards.png">
+			                        </div>
+			                    </div>                    
+			                </div>
+			                <div class="panel-body">
+			                    <form role="form" method="POST" action="/process_page" name= "cardForm" onsubmit="return validateCard()">
+			                        <div class="row">
+			                            <div class="col-xs-12">
+			                                <div class="form-group">
+			                                    <label for="couponCode">NAME ON CARD</label>
+			                                    <input type="text" class="form-control" name="cardName" required autofocus />
+			                                </div>
+			                            </div>                        
+			                        </div>
+			                        <div class="row">
+			                            <div class="col-xs-12">
+			                                <div class="form-group">
+			                                    <label>EMAIL</label>
+			                                    <input type="email" class="form-control" name="cardMail" placeholder="Valid Email" required />
+			                                </div>                            
+			                            </div>
+			                        </div>
+			                        <div class="row">
+			                            <div class="col-xs-12">
+			                                <div class="form-group">
+			                                    <label>CARD NUMBER</label>
+			                                    <p id="card_number_error" style="color: red"></p>
+			                                    <div class="input-group">
+			                                        <input type="text" class="form-control" name="cardNumber" placeholder="Valid Card Number" required />
+			                                        <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
+			                                    </div>
+			                                </div>                            
+			                            </div>
+			                        </div>
+			                        <div class="row">
+			                            <div class="col-xs-7 col-md-7">
+			                                <div class="form-group">
+			                                    <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
+			                                    <br/>
+			                                    <p id="month_error" style="color: red"></p>
+			                                    <input type="text" class="form-control" name="cardMonth" placeholder="MM" required style="width: 40%;display: inline-block;float: left;margin-right: 2%;" /> 
+			                                    <input type="text" class="form-control" name="cardYear" placeholder="YY" required style="width: 40%;float: left;" />
+			                                </div>
+			                            </div>
+			                            <div class="col-xs-5 col-md-5 pull-right">
+			                                <div class="form-group">
+			                                    <label for="cardCVC">CV CODE</label>
+			                                    <p id="cvc_error" style="color: red;"></p>
+			                                    <input type="text" class="form-control" name="cardCVC" placeholder="CVC" required />
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <input type="hidden" name="trnx_type" value="CRD" />
+			                        <input type="hidden" name="token" value="<%= @token %>" />
+			                        <input type="hidden" name="trans_ref" value="<%= @exttrid %>" />
+			                        <div class="row">
+			                            <div class="col-xs-12">
+			                                <button class="subscribe btn btn-success btn-lg btn-block" type="submit">Make Payment</button>
+			                            </div>
+			                        </div>
+			                    </form>
+			                </div>
+						</div>
+	              	</div>
+            	</div>
+        	</div>   
+        </div>
+     </div>
+</body>
+</html>
+
+
+
+<script>
+
+	function enable_voda() {
+	    var network = $("#network").val();
+	    if (network == "VOD"){
+	    	$('#voucher_code_display').show();
+	    }
+	    else{
+	    	$('#voucher_code_display').hide();
+	    }
+	}
+
+	function validateMomo(){
+	    var network = document.forms["momoForm"]["nw"].value;
+	    if(network=="0"){
+	      text = "Please select a network"
+	      document.getElementById("momo_nw_error").innerHTML = text;
+	      return false;
+	    }
+	    else
+	    {
+	      text = "";
+	      document.getElementById("momo_nw_error").innerHTML = text;
+	    }
+	    
+	    
+	  	var voucher_code = document.forms["momoForm"]["voucher_code"].value;
+	    var voucher_length = voucher_code.length;
+	    var network_sel = $("#network").val();
+	    if(network_sel == "VOD"){
+		    if(voucher_code==""){
+		      text = "Voucher Code is required"
+		      document.getElementById("momo_voucher_error").innerHTML = text;
+		      return false;
+		    }
+		    else if(isNaN(voucher_code)){
+		      text = "Voucher Code must be digits only"
+		      document.getElementById("momo_voucher_error").innerHTML = text;
+		      return false;
+		    }
+		    else if(voucher_length !=6){
+		      text = "Invalid Voucher Code"
+		      document.getElementById("momo_voucher_error").innerHTML = text;
+		      return false;
+		    }
+		    else
+		    {
+		      text = "";
+		      document.getElementById("momo_voucher_error").innerHTML = text;
+		    }
+		   }
+		else
+		{
+	      text = "";
+	      document.getElementById("momo_voucher_error").innerHTML = text;
+		}
+	    
+	}
+	
+	
+	
+	
+	function validateCard(){
+	    var card_number = document.forms["cardForm"]["cardNumber"].value;
+	    if(isNaN(card_number)){
+	      text = "Card Number must be digits only"
+	      document.getElementById("card_number_error").innerHTML = text;
+	      return false;
+	    }
+	    else
+	    {
+	      text = "";
+	      document.getElementById("card_number_error").innerHTML = text;
+	    }
+
+
+
+		var month = document.forms["cardForm"]["cardMonth"].value;
+	    if (isNaN(month)) {
+	      text = "Month must be digits"
+	      document.getElementById("month_error").innerHTML = text;
+	      return false;
+	    }
+	    else if (month > 12) {
+	      text = "Month must be between 1 to 12"
+	      document.getElementById("month_error").innerHTML = text;
+	      return false;
+	    }
+	    else if ( month < 1 ) {
+	      text = "Month must be between 1 to 12"
+	      document.getElementById("month_error").innerHTML = text;
+	      return false;
+	    }
+	    else
+	    {
+	      text = "";
+	      document.getElementById("month_error").innerHTML = text;
+	    }
+
+
+	    var year = document.forms["cardForm"]["cardYear"].value;
+	    if (isNaN(year)) {
+	      text = "Year must be digits"
+	      document.getElementById("month_error").innerHTML = text;
+	      return false;
+	    }
+	    else
+	    {
+	      text = "";
+	      document.getElementById("month_error").innerHTML = text;
+	    }
+
+
+	    var cvc = document.forms["cardForm"]["cardCVC"].value;
+	    var cvc_length = cvc.length;
+	    if (isNaN(cvc)){
+	      text = "CVC must be digits only"
+	      document.getElementById("cvc_error").innerHTML = text;
+	      return false;
+	    }
+	    else if(cvc_length != 3){
+	      text = "CVC must be 3 digits only"
+	      document.getElementById("cvc_error").innerHTML = text;
+	      return false;
+	    }
+	    else
+	    {
+	      text = "";
+	      document.getElementById("cvc_error").innerHTML = text;
+	    }
+	}
+
+</script>
+

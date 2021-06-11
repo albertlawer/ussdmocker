@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Orchard Secure Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all" id="bootstrap-css" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+
+
+<body style="font-family: 'Open Sans', sans-serif; background:url(images/pattern.jpg)">
+	<div class="container">
+		<div class="centered title"><h1>Checkout</h1></div>
+     </div>
+     <hr class="featurette-divider"></hr>
+     <div class="container">
+     	<div class="row">     
+			
+			<div class="col-sm-3"></div>
+			
+     		<div class="col-sm-6">
+                <div class="tab-content">
+                	<div id="momo" class="tab-pane fade in active">
+	                	<div class="panel panel-default credit-card-box">
+			                <div class="panel-heading display-table" style="background: #000">
+			                    <div class="row display-tr" >
+			                        <h3 class="display-td">
+			                        	<center style="color: #fff">Error</center>
+			                        </h3>
+			                    </div>                    
+			                </div>
+			                <div class="panel-body"> <strong><h4><%= @error_desc %></h4></strong> </div>
+						</div>
+        			</div>
+            	</div>
+        	</div>   
+        </div>
+     </div>
+</body>
+</html>
